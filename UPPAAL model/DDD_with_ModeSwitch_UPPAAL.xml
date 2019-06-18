@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_1.dtd'><nta><declaration>/////////////////////////////////
+// Pacemaker Parameters
+////////////////////////////////
+// A-V interval
+int TAVI=150;     
+// Lowest Rate Interval 
+int TLRI=1000;       
+// Post-Ventricular Atrial Refractory Period
+int TPVARP=100;
+// Ventricular Refractory Period      
+int TVRP=150;      
+// Upper Rate Interval
+int TURI=400;     
+
+int TPVAB=50;
+
+int fast=0;
+
+bool URI_Block=false;
+const int con_beats=30;
+
+const int trigger_rate = 350;
+const int entry_count = 8;
+const int duration = 8;
+int counter=0;
+bool if_switch=false;
+int durCount = 0;
+//this is designed for ELT termination algorithm</declaration><template><name>RanV</name><parameter>broadcast chan &amp;Vget,broadcast chan &amp;VP, broadcast chan &amp;V_act, int Vminwait, int Vmaxwait</parameter><declaration>clock x;</declaration><location id="id0" x="-2472" y="-1184"><name x="-2456" y="-1200">VReady</name><label kind="invariant" x="-2456" y="-1184">x&lt;Vmaxwait</label></location><init ref="id0"/><transition><source ref="id0"/><target ref="id0"/><label kind="synchronisation" x="-2488" y="-1248">V_act?</label><label kind="assignment" x="-2480" y="-1232">x=0</label><nail x="-2488" y="-1216"/><nail x="-2456" y="-1216"/></transition><transition><source ref="id0"/><target ref="id0"/><label kind="synchronisation" x="-2496" y="-1144">VP?</label><label kind="assignment" x="-2464" y="-1144">x=0</label><nail x="-2456" y="-1144"/><nail x="-2488" y="-1144"/></transition><transition><source ref="id0"/><target ref="id0"/><label kind="guard" x="-2584" y="-1208">x&gt;Vminwait</label><label kind="synchronisation" x="-2552" y="-1192">Vget!</label><label kind="assignment" x="-2544" y="-1176">x=0</label><nail x="-2504" y="-1168"/><nail x="-2504" y="-1200"/></transition></template><template><name>RanA</name><parameter>broadcast chan &amp;Aget,broadcast chan &amp;AP, broadcast chan &amp;A_act,int Aminwait, int Amaxwait</parameter><declaration>clock x;</declaration><location id="id1" x="-224" y="-128"><name x="-192" y="-152">AReady</name><label kind="invariant" x="-208" y="-136">x&lt;Amaxwait</label></location><init ref="id1"/><transition><source ref="id1"/><target ref="id1"/><label kind="synchronisation" x="-240" y="-192">A_act?</label><label kind="assignment" x="-232" y="-176">x=0</label><nail x="-240" y="-160"/><nail x="-208" y="-160"/></transition><transition><source ref="id1"/><target ref="id1"/><label kind="synchronisation" x="-248" y="-96">AP?</label><label kind="assignment" x="-216" y="-96">x=0</label><nail x="-240" y="-96"/><nail x="-208" y="-96"/></transition><transition><source ref="id1"/><target ref="id1"/><label kind="guard" x="-336" y="-152">x&gt;Aminwait</label><label kind="synchronisation" x="-296" y="-136">Aget!</label><label kind="assignment" x="-288" y="-120">x=0</label><nail x="-256" y="-112"/><nail x="-256" y="-144"/></transition></template><template><name>cond</name><parameter>broadcast chan &amp;Aget, broadcast chan &amp;Vget, broadcast chan &amp;A_act, broadcast chan &amp;V_act, broadcast chan &amp;AP, broadcast chan &amp;VP, int Tantemin, int Tantemax, int Tretromin, int Tretromax</parameter><declaration>clock t;</declaration><location id="id2" x="-32" y="-88"><name x="-42" y="-118">Retro</name><label kind="invariant" x="-42" y="-73">t&lt;=Tretromax</label></location><location id="id3" x="-384" y="-88"><name x="-400" y="-120">Ante</name><label kind="invariant" x="-448" y="-72">t&lt;=Tantemax</label></location><location id="id4" x="-208" y="-88"><name x="-192" y="-128">Idle</name></location><init ref="id4"/><transition><source ref="id4"/><target ref="id4"/><label kind="synchronisation" x="-216" y="0">VP?</label><nail x="-216" y="-56"/><nail x="-240" y="0"/><nail x="-176" y="0"/></transition><transition><source ref="id4"/><target ref="id4"/><label kind="synchronisation" x="-216" y="-208">AP?</label><nail x="-232" y="-184"/><nail x="-184" y="-184"/></transition><transition><source ref="id4"/><target ref="id2"/><label kind="synchronisation" x="-152" y="-24">VP?</label><label kind="assignment" x="-104" y="-16">t=0</label><nail x="-120" y="-16"/></transition><transition><source ref="id2"/><target ref="id4"/><label kind="synchronisation" x="-136" y="-136">AP?</label><nail x="-128" y="-120"/></transition><transition><source ref="id3"/><target ref="id4"/><label kind="synchronisation" x="-312" y="-136">VP?</label><nail x="-304" y="-120"/></transition><transition><source ref="id4"/><target ref="id3"/><label kind="synchronisation" x="-352" y="-32">AP?</label><label kind="assignment" x="-296" y="-24">t=0</label><nail x="-312" y="-16"/></transition><transition><source ref="id4"/><target ref="id4"/><label kind="synchronisation" x="-224" y="-40">Vget?</label><nail x="-224" y="-40"/><nail x="-192" y="-40"/></transition><transition><source ref="id4"/><target ref="id4"/><label kind="synchronisation" x="-224" y="-168">Aget?</label><nail x="-224" y="-144"/><nail x="-192" y="-144"/></transition><transition><source ref="id2"/><target ref="id4"/><label kind="synchronisation" x="-136" y="-168">Aget?</label><nail x="-120" y="-144"/></transition><transition><source ref="id3"/><target ref="id4"/><label kind="synchronisation" x="-320" y="-168">Vget?</label><nail x="-304" y="-144"/></transition><transition><source ref="id2"/><target ref="id4"/><label kind="guard" x="-160" y="-112">t&gt;=Tretromin</label><label kind="synchronisation" x="-144" y="-88">A_act!</label><nail x="-96" y="-88"/></transition><transition><source ref="id3"/><target ref="id4"/><label kind="guard" x="-336" y="-112">t&gt;=Tantemin</label><label kind="synchronisation" x="-312" y="-88">V_act!</label><nail x="-344" y="-88"/></transition><transition><source ref="id4"/><target ref="id2"/><label kind="synchronisation" x="-160" y="-64">Vget?</label><label kind="assignment" x="-112" y="-64">t=0</label><nail x="-120" y="-56"/></transition><transition><source ref="id4"/><target ref="id3"/><label kind="synchronisation" x="-344" y="-64">Aget?</label><label kind="assignment" x="-296" y="-64">t=0</label><nail x="-304" y="-56"/></transition></template><template><name>LRI_test</name><parameter>broadcast chan &amp;Vin, broadcast chan &amp;VP</parameter><declaration>clock t;</declaration><location id="id5" x="56" y="-24"><name x="48" y="-56">two_v</name><committed/></location><location id="id6" x="-40" y="-24"><name x="-72" y="-56">wait_2nd</name></location><location id="id7" x="-144" y="-24"><name x="-176" y="-56">wait_1st</name></location><init ref="id7"/><transition><source ref="id5"/><target ref="id6"/><label kind="assignment" x="-8" y="0">t=0</label><nail x="56" y="16"/><nail x="-40" y="16"/></transition><transition><source ref="id6"/><target ref="id5"/><label kind="synchronisation" x="-8" y="-32">VP?</label><nail x="8" y="-8"/></transition><transition><source ref="id6"/><target ref="id5"/><label kind="synchronisation" x="-8" y="-64">Vin?</label><nail x="8" y="-48"/></transition><transition><source ref="id7"/><target ref="id6"/><label kind="synchronisation" x="-112" y="-24">VP?</label><label kind="assignment" x="-112" y="0">t=0</label><nail x="-136" y="-16"/><nail x="-136" y="-16"/><nail x="-104" y="0"/></transition><transition><source ref="id7"/><target ref="id6"/><label kind="synchronisation" x="-112" y="-64">Vin?</label><label kind="assignment" x="-104" y="-40">t=0</label><nail x="-96" y="-40"/></transition></template><template><name>URI_test</name><parameter>broadcast chan &amp;VS, broadcast chan &amp;VP</parameter><declaration>clock t;</declaration><location id="id8" x="-32" y="-56"><name x="-42" y="-86">interval</name><label kind="comments">第二个VP与前面保证一定的时间间隔</label><committed/></location><location id="id9" x="-120" y="-56"><name x="-136" y="-88">wait_vp</name></location><location id="id10" x="-200" y="-56"><name x="-224" y="-88">wait_v</name></location><init ref="id10"/><transition><source ref="id9"/><target ref="id9"/><label kind="synchronisation" x="-160" y="-8">VS?</label><label kind="assignment" x="-120" y="-8">t=0</label><nail x="-152" y="-8"/><nail x="-128" y="-8"/></transition><transition><source ref="id8"/><target ref="id9"/><label kind="assignment" x="-64" y="-40">t=0</label><nail x="-32" y="-16"/><nail x="-88" y="-16"/></transition><transition><source ref="id9"/><target ref="id8"/><label kind="synchronisation" x="-80" y="-80">VP?</label></transition><transition><source ref="id10"/><target ref="id9"/><label kind="synchronisation" x="-208" y="-40">VS?</label><label kind="assignment" x="-200" y="-24">t=0</label><nail x="-192" y="-48"/><nail x="-160" y="-24"/></transition><transition><source ref="id10"/><target ref="id9"/><label kind="synchronisation" x="-168" y="-96">VP?</label><label kind="assignment" x="-168" y="-72">t=0</label><nail x="-160" y="-80"/></transition></template><template><name>NAV</name><parameter>broadcast chan &amp;Aget,broadcast chan &amp; AV,broadcast chan &amp;VA,broadcast chan &amp;A_act,broadcast chan &amp;AP, int AVERP_min,int AVERP_max</parameter><declaration>clock t;</declaration><location id="id11" x="-224" y="-40"><committed/></location><location id="id12" x="-288" y="-72"><committed/></location><location id="id13" x="-224" y="0"><committed/></location><location id="id14" x="-168" y="0"><name x="-178" y="-30">ERP</name><label kind="invariant" x="-160" y="32">t&lt;=AVERP_max</label></location><location id="id15" x="-288" y="0"></location><init ref="id15"/><transition><source ref="id14"/><target ref="id14"/><label kind="synchronisation" x="-120" y="8">VA?</label><nail x="-128" y="8"/><nail x="-128" y="32"/></transition><transition><source ref="id14"/><target ref="id14"/><label kind="synchronisation" x="-120" y="-24">Aget?</label><nail x="-128" y="-24"/><nail x="-128" y="0"/></transition><transition><source ref="id11"/><target ref="id14"/><label kind="synchronisation" x="-200" y="-64">AV!</label><nail x="-168" y="-40"/></transition><transition><source ref="id15"/><target ref="id11"/><label kind="synchronisation" x="-272" y="-64">AP?</label><label kind="assignment" x="-272" y="-40">t=0</label><nail x="-288" y="-40"/></transition><transition><source ref="id12"/><target ref="id14"/><label kind="synchronisation" x="-152" y="-56">A_act!</label><nail x="-248" y="-72"/><nail x="-168" y="-72"/></transition><transition><source ref="id15"/><target ref="id12"/><label kind="synchronisation" x="-320" y="-56">VA?</label><label kind="assignment" x="-320" y="-40">t=0</label></transition><transition><source ref="id13"/><target ref="id14"/><label kind="synchronisation" x="-208" y="0">AV!</label></transition><transition><source ref="id14"/><target ref="id15"/><label kind="guard" x="-280" y="40">t&gt;=AVERP_min</label><nail x="-168" y="64"/><nail x="-288" y="64"/></transition><transition><source ref="id15"/><target ref="id13"/><label kind="synchronisation" x="-272" y="0">Aget?</label><label kind="assignment" x="-264" y="16">t=0</label></transition></template><template><name>cond_d</name><parameter>broadcast chan &amp;AV,broadcast chan &amp;V_act,broadcast chan &amp;Vget,broadcast chan &amp;VA,broadcast chan &amp;VP,int Tcond_min, int Tcond_max</parameter><declaration>clock t;</declaration><location id="id16" x="0" y="-96"><label kind="invariant" x="-10" y="-81">t&lt;=2</label></location><location id="id17" x="144" y="0"><name x="134" y="-30">retro</name><label kind="invariant" x="134" y="15">t&lt;=Tcond_max</label></location><location id="id18" x="-144" y="0"><name x="-154" y="-30">ante</name><label kind="invariant" x="-154" y="15">t&lt;=Tcond_max</label></location><location id="id19" x="0" y="0"></location><init ref="id19"/><transition><source ref="id18"/><target ref="id16"/><label kind="synchronisation" x="-120" y="-232">VP?</label><label kind="assignment" x="-80" y="-232">t=0</label><nail x="-144" y="-208"/><nail x="0" y="-208"/></transition><transition><source ref="id19"/><target ref="id17"/><label kind="synchronisation" x="48" y="48">VP?</label><label kind="assignment" x="80" y="48">t=0</label><nail x="0" y="64"/><nail x="144" y="64"/></transition><transition><source ref="id17"/><target ref="id16"/><label kind="synchronisation" x="32" y="-184">AV?</label><label kind="assignment" x="80" y="-184">t=0</label><nail x="144" y="-160"/><nail x="0" y="-160"/></transition><transition><source ref="id18"/><target ref="id16"/><label kind="synchronisation" x="-128" y="-184">Vget?</label><label kind="assignment" x="-72" y="-184">t=0</label><nail x="-144" y="-160"/><nail x="0" y="-160"/></transition><transition><source ref="id16"/><target ref="id19"/></transition><transition><source ref="id17"/><target ref="id16"/><label kind="guard" x="40" y="-120">t&gt;=Tcond_min</label><label kind="synchronisation" x="40" y="-96">VA!</label><label kind="assignment" x="80" y="-96">t=0</label><nail x="144" y="-96"/></transition><transition><source ref="id18"/><target ref="id16"/><label kind="guard" x="-128" y="-120">t&gt;=Tcond_min</label><label kind="synchronisation" x="-128" y="-96">V_act!</label><label kind="assignment" x="-72" y="-96">t=0</label><nail x="-144" y="-96"/></transition><transition><source ref="id19"/><target ref="id17"/><label kind="synchronisation" x="48" y="-24">Vget?</label><label kind="assignment" x="64" y="0">t=0</label></transition><transition><source ref="id19"/><target ref="id18"/><label kind="synchronisation" x="-88" y="-24">AV?</label><label kind="assignment" x="-80" y="0">t=0</label></transition></template><template><name>PVC</name><parameter>broadcast chan &amp;V_act</parameter><declaration>clock t;</declaration><location id="id20" x="-16" y="-24"><name x="-26" y="-54">PVCed</name></location><location id="id21" x="-120" y="-24"><name x="-130" y="-54">Idle</name></location><init ref="id21"/><transition><source ref="id21"/><target ref="id20"/><label kind="guard" x="-96" y="-48">t&gt;TVRP</label><label kind="synchronisation" x="-96" y="-24">V_act!</label></transition></template><template><name>Sensing</name><parameter>broadcast chan &amp;get, broadcast chan &amp;act,broadcast chan &amp;in</parameter><location id="id22" x="-72" y="-24"><committed/></location><location id="id23" x="-152" y="-24"></location><init ref="id23"/><transition><source ref="id23"/><target ref="id22"/><label kind="synchronisation" x="-120" y="-80">act?</label><nail x="-152" y="-56"/><nail x="-72" y="-56"/></transition><transition><source ref="id22"/><target ref="id23"/><label kind="synchronisation" x="-120" y="-8">in!</label><nail x="-72" y="8"/><nail x="-152" y="8"/></transition><transition><source ref="id23"/><target ref="id22"/><label kind="synchronisation" x="-128" y="-48">get?</label></transition></template><template><name>Persist</name><parameter>broadcast chan &amp;Vin, broadcast chan &amp;VP</parameter><declaration>clock t;</declaration><location id="id24" x="-872" y="-80"><name x="-882" y="-110">err</name></location><location id="id25" x="-952" y="-80"><name x="-962" y="-110">Check</name><committed/></location><location id="id26" x="-1088" y="-80"></location><location id="id27" x="-1216" y="-80"></location><init ref="id27"/><transition><source ref="id26"/><target ref="id25"/><label kind="synchronisation" x="-1032" y="-72">VP?</label><nail x="-1016" y="-48"/></transition><transition><source ref="id27"/><target ref="id26"/><label kind="synchronisation" x="-1168" y="-72">VP?</label><label kind="assignment" x="-1176" y="-40">t=0,fast=0</label><nail x="-1152" y="-40"/></transition><transition><source ref="id25"/><target ref="id26"/><label kind="guard" x="-1040" y="-40">t&gt;TURI</label><label kind="assignment" x="-1056" y="-16">t=0,fast=0</label><nail x="-952" y="-16"/><nail x="-1088" y="-16"/></transition><transition><source ref="id25"/><target ref="id26"/><label kind="guard" x="-1096" y="-168">t&lt;=TURI &amp;&amp; fast&lt;con_beats</label><label kind="assignment" x="-1048" y="-144">t=0,fast++</label><nail x="-952" y="-144"/><nail x="-1088" y="-144"/></transition><transition><source ref="id25"/><target ref="id24"/><label kind="guard" x="-984" y="-64">t&lt;=TURI &amp;&amp; fast&gt;=con_beats</label></transition><transition><source ref="id26"/><target ref="id25"/><label kind="synchronisation" x="-1032" y="-112">Vin?</label><nail x="-1016" y="-120"/></transition><transition><source ref="id27"/><target ref="id26"/><label kind="synchronisation" x="-1168" y="-136">Vin?</label><label kind="assignment" x="-1184" y="-104">t=0,fast=0</label><nail x="-1152" y="-120"/></transition></template><template><name>VRP</name><parameter>broadcast chan &amp;Vin,broadcast chan &amp;VP,broadcast chan &amp;VS</parameter><declaration>clock t;</declaration><location id="id28" x="-784" y="-360"><committed/></location><location id="id29" x="-848" y="-144"><committed/></location><location id="id30" x="-848" y="-216"><name x="-824" y="-232">unsensed</name><label kind="invariant" x="-928" y="-224">t&lt;=TVRP</label></location><location id="id31" x="-904" y="-360"></location><init ref="id31"/><transition><source ref="id28"/><target ref="id30"/><label kind="synchronisation" x="-832" y="-272">VS!</label></transition><transition><source ref="id29"/><target ref="id31"/><nail x="-1008" y="-144"/><nail x="-1008" y="-360"/></transition><transition><source ref="id30"/><target ref="id29"/><label kind="guard" x="-840" y="-192">t&gt;=TVRP</label></transition><transition><source ref="id31"/><target ref="id30"/><label kind="synchronisation" x="-912" y="-312">VP?</label><label kind="assignment" x="-904" y="-296">t=0</label></transition><transition><source ref="id31"/><target ref="id28"/><label kind="synchronisation" x="-856" y="-384">Vin?</label><label kind="assignment" x="-848" y="-360">t=0</label></transition></template><template><name>PVARP</name><parameter>broadcast chan &amp;Ain,broadcast chan &amp;AS,broadcast chan &amp;AR,broadcast chan &amp;VS,broadcast chan &amp;VP</parameter><declaration>clock t;</declaration><location id="id32" x="-2016" y="-264"><committed/></location><location id="id33" x="-1936" y="-80"><committed/></location><location id="id34" x="-2016" y="-80"><name x="-2112" y="-112">unsensed</name><label kind="invariant" x="-2104" y="-80">t&lt;=TPVARP</label></location><location id="id35" x="-2016" y="-192"></location><init ref="id35"/><transition><source ref="id33"/><target ref="id34"/><label kind="synchronisation" x="-1984" y="-56">AR!</label><nail x="-1976" y="-56"/></transition><transition><source ref="id34"/><target ref="id33"/><label kind="synchronisation" x="-1992" y="-104">Ain?</label></transition><transition><source ref="id32"/><target ref="id35"/><label kind="synchronisation" x="-2072" y="-248">AS!</label><nail x="-2040" y="-232"/></transition><transition><source ref="id35"/><target ref="id32"/><label kind="synchronisation" x="-2008" y="-240">Ain?</label></transition><transition><source ref="id34"/><target ref="id35"/><label kind="guard" x="-1984" y="-192">t&gt;=TPVARP</label><nail x="-2016" y="0"/><nail x="-1904" y="0"/><nail x="-1904" y="-192"/></transition><transition><source ref="id35"/><target ref="id34"/><label kind="synchronisation" x="-1960" y="-160">VP?</label><label kind="assignment" x="-1960" y="-144">t=0</label><nail x="-1976" y="-136"/></transition><transition><source ref="id35"/><target ref="id34"/><label kind="synchronisation" x="-2072" y="-176">VS?</label><label kind="assignment" x="-2080" y="-160">t=0</label><nail x="-2056" y="-136"/></transition></template><template><name>AVI</name><parameter>broadcast chan &amp;AS,broadcast chan &amp;AP, broadcast chan &amp;VS,broadcast chan &amp;VP,broadcast chan &amp;uriReady,broadcast chan &amp;switch2vdi,broadcast chan &amp;back</parameter><declaration>clock t;</declaration><location id="id36" x="-448" y="-192"><label kind="invariant" x="-504" y="-176">if_switch==true</label></location><location id="id37" x="-448" y="96"><name x="-520" y="72">wait_URI</name><label kind="invariant" x="-432" y="88">if_switch==false</label></location><location id="id38" x="-264" y="16"><committed/></location><location id="id39" x="-448" y="-56"><label kind="invariant" x="-458" y="-41">if_switch==false</label></location><location id="id40" x="-448" y="16"><committed/></location><location id="id41" x="-264" y="-56"><label kind="invariant" x="-344" y="-32">t&lt;=TAVI &amp;&amp; if_switch==false</label></location><init ref="id39"/><transition><source ref="id37"/><target ref="id36"/><label kind="synchronisation" x="-592" y="-192">switch2vdi?</label><nail x="-616" y="96"/><nail x="-616" y="-192"/></transition><transition><source ref="id41"/><target ref="id36"/><label kind="synchronisation" x="-344" y="-184">switch2vdi?</label><nail x="-264" y="-192"/></transition><transition><source ref="id36"/><target ref="id39"/><label kind="synchronisation" x="-384" y="-160">back?</label><nail x="-384" y="-168"/></transition><transition><source ref="id39"/><target ref="id36"/><label kind="synchronisation" x="-488" y="-144">switch2vdi?</label></transition><transition><source ref="id40"/><target ref="id39"/><label kind="synchronisation" x="-480" y="-16">VP!</label></transition><transition><source ref="id41"/><target ref="id39"/><label kind="synchronisation" x="-336" y="-48">VP?</label><nail x="-328" y="-24"/></transition><transition><source ref="id37"/><target ref="id39"/><label kind="synchronisation" x="-552" y="-56">VS?</label><nail x="-616" y="96"/><nail x="-616" y="-56"/></transition><transition><source ref="id37"/><target ref="id40"/><label kind="synchronisation" x="-488" y="48">uriReady?</label></transition><transition><source ref="id38"/><target ref="id37"/><label kind="guard" x="-352" y="56">URI_Block==true</label></transition><transition><source ref="id38"/><target ref="id40"/><label kind="guard" x="-392" y="-8">URI_Block==false</label></transition><transition><source ref="id41"/><target ref="id38"/><label kind="guard" x="-256" y="-16">t&gt;=TAVI</label></transition><transition><source ref="id41"/><target ref="id39"/><label kind="synchronisation" x="-344" y="-80">VS?</label></transition><transition><source ref="id39"/><target ref="id41"/><label kind="synchronisation" x="-368" y="-128">AP?</label><label kind="assignment" x="-336" y="-128">t=0</label><nail x="-360" y="-112"/></transition><transition><source ref="id39"/><target ref="id41"/><label kind="synchronisation" x="-360" y="-104">AS?</label><label kind="assignment" x="-320" y="-104">t=0</label><nail x="-360" y="-88"/></transition></template><template><name>LRI</name><parameter>broadcast chan &amp;AS,broadcast chan &amp;VS,broadcast chan &amp;AP, broadcast chan &amp;VP,broadcast chan &amp;switch2vdi,broadcast chan &amp;back</parameter><declaration>clock t;</declaration><location id="id42" x="-720" y="-280"><committed/></location><location id="id43" x="-720" y="-376"><label kind="invariant" x="-730" y="-361">t&lt;=TLRI &amp;&amp; if_switch==true</label></location><location id="id44" x="-560" y="-136"><label kind="invariant" x="-632" y="-176">t&lt;=TLRI &amp;&amp; if_switch==false</label></location><location id="id45" x="-560" y="-280"><label kind="invariant" x="-616" y="-312">t&lt;=TLRI-TAVI &amp;&amp; if_switch==false</label></location><init ref="id45"/><transition><source ref="id42"/><target ref="id45"/><label kind="guard" x="-712" y="-312">t&lt;TLRI-TAVI</label></transition><transition><source ref="id42"/><target ref="id44"/><label kind="guard" x="-704" y="-256">t&gt;=TLRI-TAVI</label><nail x="-720" y="-136"/></transition><transition><source ref="id43"/><target ref="id42"/><label kind="synchronisation" x="-720" y="-336">back?</label></transition><transition><source ref="id45"/><target ref="id43"/><label kind="synchronisation" x="-552" y="-336">switch2vdi?</label><nail x="-560" y="-376"/></transition><transition><source ref="id43"/><target ref="id43"/><label kind="guard" x="-800" y="-400">t&gt;=TLRI</label><label kind="synchronisation" x="-800" y="-384">VP!</label><label kind="assignment" x="-800" y="-368">t=0</label><nail x="-776" y="-376"/><nail x="-776" y="-336"/></transition><transition><source ref="id43"/><target ref="id43"/><label kind="synchronisation" x="-744" y="-448">VS?</label><label kind="assignment" x="-712" y="-448">t=0</label><nail x="-696" y="-424"/><nail x="-744" y="-424"/></transition><transition><source ref="id45"/><target ref="id45"/><label kind="synchronisation" x="-464" y="-296">VP?</label><label kind="assignment" x="-464" y="-280">t=0</label><nail x="-480" y="-264"/><nail x="-480" y="-288"/></transition><transition><source ref="id45"/><target ref="id45"/><label kind="synchronisation" x="-680" y="-296">VS?</label><label kind="assignment" x="-680" y="-280">t=0</label><nail x="-640" y="-264"/><nail x="-640" y="-288"/></transition><transition><source ref="id44"/><target ref="id45"/><label kind="guard" x="-480" y="-256">t&gt;=TLRI</label><label kind="synchronisation" x="-456" y="-224">VP!</label><label kind="assignment" x="-448" y="-208">t=0</label><nail x="-416" y="-136"/><nail x="-416" y="-280"/></transition><transition><source ref="id45"/><target ref="id44"/><label kind="synchronisation" x="-608" y="-208">AS?</label><nail x="-584" y="-200"/></transition><transition><source ref="id44"/><target ref="id45"/><label kind="synchronisation" x="-512" y="-160">VP?</label><label kind="assignment" x="-456" y="-160">t=0</label><nail x="-464" y="-136"/></transition><transition><source ref="id44"/><target ref="id45"/><label kind="synchronisation" x="-640" y="-160">VS?</label><label kind="assignment" x="-608" y="-160">t=0</label><nail x="-656" y="-136"/></transition><transition><source ref="id45"/><target ref="id44"/><label kind="guard" x="-576" y="-208">t&gt;=TLRI-TAVI</label><label kind="synchronisation" x="-552" y="-192">AP!</label></transition></template><template><name>URI</name><parameter>broadcast chan &amp;VS,broadcast chan &amp;VP,broadcast chan &amp;uriReady</parameter><declaration>clock t;</declaration><location id="id46" x="-1208" y="-272"><name x="-1304" y="-296">URI_block</name><label kind="invariant" x="-1200" y="-336">t&lt;=TURI</label></location><location id="id47" x="-1208" y="-376"></location><init ref="id47"/><transition><source ref="id46"/><target ref="id46"/><label kind="synchronisation" x="-1184" y="-304">VS?</label><label kind="assignment" x="-1216" y="-256">t=0,URI_Block=true</label><nail x="-1160" y="-256"/><nail x="-1160" y="-288"/></transition><transition><source ref="id46"/><target ref="id46"/><label kind="synchronisation" x="-1280" y="-264">VP?</label><label kind="assignment" x="-1328" y="-248">t=0,URI_Block=true</label><nail x="-1256" y="-272"/><nail x="-1248" y="-240"/></transition><transition><source ref="id46"/><target ref="id47"/><label kind="guard" x="-1320" y="-376">t&gt;=TURI</label><label kind="synchronisation" x="-1328" y="-360">uriReady!</label><label kind="assignment" x="-1328" y="-344">URI_Block=false</label><nail x="-1208" y="-200"/><nail x="-1336" y="-200"/><nail x="-1336" y="-376"/></transition><transition><source ref="id47"/><target ref="id46"/><label kind="synchronisation" x="-1192" y="-320">VP?</label><label kind="assignment" x="-1240" y="-360">t=0,URI_Block=true</label><nail x="-1192" y="-320"/></transition><transition><source ref="id47"/><target ref="id46"/><label kind="synchronisation" x="-1232" y="-320">VS?</label><label kind="assignment" x="-1368" y="-312">t=0,URI_Block=true</label><nail x="-1224" y="-320"/></transition></template><template><name>Pre_duration</name><parameter>broadcast chan &amp;AS,broadcast chan &amp;AR,broadcast chan &amp;AP, broadcast chan &amp;atrFast, broadcast chan &amp;atrSlow</parameter><declaration>clock t;</declaration><location id="id48" x="-184" y="-120"><committed/></location><location id="id49" x="-360" y="-128"></location><location id="id50" x="-440" y="-128"></location><init ref="id50"/><transition><source ref="id48"/><target ref="id49"/><label kind="guard" x="-368" y="-88">t&lt;=trigger_rate</label><label kind="synchronisation" x="-264" y="-88">atrFast!</label><label kind="assignment" x="-208" y="-88">t=0</label><nail x="-184" y="-88"/><nail x="-360" y="-88"/></transition><transition><source ref="id48"/><target ref="id49"/><label kind="guard" x="-376" y="-192">t&gt;trigger_rate</label><label kind="synchronisation" x="-264" y="-192">atrSlow!</label><label kind="assignment" x="-200" y="-192">t=0</label><nail x="-184" y="-168"/><nail x="-360" y="-168"/></transition><transition><source ref="id49"/><target ref="id48"/><label kind="synchronisation" x="-280" y="-112">AS?</label><nail x="-272" y="-112"/></transition><transition><source ref="id49"/><target ref="id48"/><label kind="synchronisation" x="-264" y="-168">AR?</label><nail x="-272" y="-152"/></transition><transition><source ref="id50"/><target ref="id49"/><label kind="synchronisation" x="-448" y="-104">AR?</label><label kind="assignment" x="-408" y="-104">t=0</label><nail x="-400" y="-104"/></transition><transition><source ref="id50"/><target ref="id49"/><label kind="synchronisation" x="-432" y="-168">AS?</label><label kind="assignment" x="-392" y="-168">t=0</label><nail x="-400" y="-152"/></transition></template><template><name>Duration</name><parameter>urgent chan &amp;toDur, broadcast chan &amp;VP,broadcast chan &amp;VS,broadcast chan &amp;switch2vdi,broadcast chan &amp;back,broadcast chan &amp;atrFast</parameter><declaration>clock t;
+</declaration><location id="id51" x="-520" y="-248"><committed/></location><location id="id52" x="-392" y="-248"><name x="-440" y="-288">vdiMode</name></location><location id="id53" x="-664" y="-248"></location><location id="id54" x="-776" y="-248"></location><init ref="id54"/><transition><source ref="id53"/><target ref="id51"/><label kind="guard" x="-640" y="-280">durCount==duration</label><label kind="synchronisation" x="-584" y="-224">VS?</label><nail x="-576" y="-224"/></transition><transition><source ref="id51"/><target ref="id52"/><label kind="guard" x="-472" y="-232">counter&gt;0</label><label kind="synchronisation" x="-472" y="-248">switch2vdi!</label><label kind="assignment" x="-504" y="-272">if_switch=true</label></transition><transition><source ref="id51"/><target ref="id54"/><label kind="guard" x="-712" y="-352">counter&lt;=0</label><label kind="assignment" x="-616" y="-352">durCount=0</label><nail x="-520" y="-328"/><nail x="-776" y="-328"/></transition><transition><source ref="id52"/><target ref="id54"/><label kind="guard" x="-696" y="-192">counter&lt;=0</label><label kind="synchronisation" x="-616" y="-192">back!</label><label kind="assignment" x="-576" y="-192">durCount=0,if_switch=false</label><nail x="-392" y="-168"/><nail x="-776" y="-168"/></transition><transition><source ref="id53"/><target ref="id51"/><label kind="guard" x="-648" y="-248">durCount==duration</label><label kind="synchronisation" x="-600" y="-264">VP?</label></transition><transition><source ref="id53"/><target ref="id53"/><label kind="guard" x="-808" y="-240">durCount&lt;duration</label><label kind="synchronisation" x="-712" y="-224">VS?</label><label kind="assignment" x="-680" y="-224">durCount++</label><nail x="-640" y="-200"/><nail x="-688" y="-200"/></transition><transition><source ref="id53"/><target ref="id53"/><label kind="guard" x="-760" y="-320">durCount&lt;duration</label><label kind="synchronisation" x="-640" y="-320">VP?</label><label kind="assignment" x="-608" y="-320">durCount++</label><nail x="-640" y="-296"/><nail x="-688" y="-296"/></transition><transition><source ref="id54"/><target ref="id53"/><label kind="synchronisation" x="-728" y="-272">toDur?</label></transition></template><template><name>counterModel</name><parameter>broadcast chan &amp;atrFast, broadcast chan &amp;atrSlow, urgent chan &amp;toDur</parameter><declaration>clock t;
+</declaration><location id="id55" x="-160" y="-72"></location><init ref="id55"/><transition><source ref="id55"/><target ref="id55"/><label kind="guard" x="-88" y="-56">counter&gt;=100</label><label kind="synchronisation" x="-88" y="-40">atrSlow?</label><label kind="assignment" x="-88" y="-24">counter=10</label><nail x="-104" y="-16"/><nail x="-88" y="-32"/></transition><transition><source ref="id55"/><target ref="id55"/><label kind="guard" x="-224" y="-152">counter&gt;=100</label><label kind="synchronisation" x="-224" y="-136">atrFast?</label><label kind="assignment" x="-168" y="-136">counter=1</label><nail x="-176" y="-112"/><nail x="-144" y="-112"/></transition><transition><source ref="id55"/><target ref="id55"/><label kind="guard" x="-272" y="-48">counter&gt;=entry_count</label><label kind="synchronisation" x="-224" y="-32">toDur!</label><nail x="-136" y="-24"/><nail x="-184" y="-24"/></transition><transition><source ref="id55"/><target ref="id55"/><label kind="guard" x="-104" y="-112">counter&lt;=100</label><label kind="synchronisation" x="-104" y="-96">atrSlow?</label><label kind="assignment" x="-104" y="-80">counter--</label><nail x="-112" y="-104"/><nail x="-112" y="-72"/></transition><transition><source ref="id55"/><target ref="id55"/><label kind="guard" x="-256" y="-104">counter&lt;=100</label><label kind="synchronisation" x="-256" y="-88">atrFast?</label><label kind="assignment" x="-272" y="-72">counter++</label><nail x="-208" y="-80"/><nail x="-208" y="-56"/></transition></template><system>broadcast chan AP,AS,VP,VS,Vget,Aget,AR,A_act,V_act,AV,VA,Vin,Ain,uriReady,atrFast,atrSlow,back,switch2vdi;
+urgent chan toDur;
+/////////////////////////////////
+// Heart Models, one systeme on time 一个时刻只能有一个sustem model 
+///////////////////////////////// 
+// HM_0 
+PA_0=RanA(Aget,AP,V_act,200,300);//20,2000;
+PV_0=RanV(Vget,VP,A_act,200,300);
+
+// HM_1
+PV_1=RanV(Vget,VP,V_act,200,2000);
+PA_1=RanA(Aget,AP,A_act,200,2000);
+Pcond_1=cond(Aget,Vget,A_act,V_act,AP,VP,100,200,100,200); 
+
+// HM_2_1
+PV_2_1=RanV(Vget,VP,V_act,9999,9999);
+PA_2_1=RanA(Aget,AP,A_act,1000,2000);
+Pcond_2_1=cond(Aget,Vget,A_act,V_act,AP,VP,100,200,100,200);
+
+// HM_2_2
+PV_2_2=RanV(Vget,VP,V_act,9999,9999);
+PA_2_2=RanA(Aget,AP,A_act,200,300);
+Pcond_2_2=cond(Aget,Vget,A_act,V_act,AP,VP,100,200,100,200);
+
+// HM_2_3
+PV_2_3=RanV(Vget,VP,V_act,200,800);
+PA_2_3=RanA(Aget,AP,A_act,1000,2000);
+Pcond_2_3=cond(Aget,Vget,A_act,V_act,AP,VP,100,200,100,200);
+
+// HM_2_4
+PV_2_4=RanV(Vget,VP,V_act,200,2000);
+PA_2_4=RanA(Aget,AP,A_act,1000,2000);
+Pcond_2_4=cond(Aget,Vget,A_act,V_act,AP,VP,100,200,100,200);
+
+// HM_2_5
+PV_2_5=RanV(Vget,VP,V_act,9999,9999);
+PA_2_5=RanA(Aget,AP,A_act,400,2000);
+Pcond_2_5=cond(Aget,Vget,A_act,V_act,AP,VP,100,200,100,200);
+
+// HM_3_1
+PV_3_1=RanV(Vget,VP,V_act,9999,9999);
+PA_3_1=RanA(Aget,AP,A_act,1000,2000);
+Pcond_3_1=cond_d(AV,V_act,Vget,VA,VP,150,150);  
+PAV_3_1=NAV(Aget,AV,VA,A_act,AP,350,400);
+
+// HM_3_2
+PV_3_2=RanV(Vget,VP,V_act,9999,9999);
+PA_3_2=RanA(Aget,AP,A_act,200,300);
+Pcond_3_2=cond_d(AV,V_act,Vget,VA,VP,150,150);  
+PAV_3_2=NAV(Aget,AV,VA,A_act,AP,450,500);
+
+// HM_3_3
+PV_3_3=RanV(Vget,VP,V_act,200,800);
+PA_3_3=RanA(Aget,AP,A_act,1000,2000);
+Pcond_3_3=cond_d(AV,V_act,Vget,VA,VP,150,150);  
+PAV_3_3=NAV(Aget,AV,VA,A_act,AP,350,400);
+
+// HM_3_4
+PV_3_4=RanV(Vget,VP,V_act,9999,9999);
+PA_3_4=RanA(Aget,AP,A_act,1000,2000);
+Pcond_3_4=cond_d(AV,V_act,Vget,VA,VP,150,150);  
+PAV_3_4=NAV(Aget,AV,VA,A_act,AP,350,400);
+PPVC_3_4=PVC(Vget);
+
+// HM_3_5
+PV_3_5=RanV(Vget,VP,V_act,9999,9999);
+PA_3_5=RanA(Aget,AP,A_act,400,2000);
+Pcond_3_5=cond_d(AV,V_act,Vget,VA,VP,150,150);  
+PAV_3_5=NAV(Aget,AV,VA,A_act,AP,350,400);
+
+/////////////////////////////////////
+// Sensing
+////////////////////////////////////
+PAS=Sensing(Aget,A_act,Ain);
+PVS=Sensing(Vget,V_act,Vin);
+
+/////////////////////////////////////
+// Monitors for properties
+////////////////////////////////////
+ 
+// Lower Rate Limit
+PLRL=LRI_test(Vin,VP);
+PURL=URI_test(VS,VP);
+PPersist=Persist(Vin,VP);
+
+/////////////////////////////////////
+// Your pacemaker model here
+////////////////////////////////////
+
+PVRP = VRP(Vin,VP,VS);
+PPVARP = PVARP(Ain,AS,AR,VS,VP);
+PAVI= AVI(AS,AP,VS,VP,uriReady,switch2vdi,back);
+PLRI = LRI(AS,VS,AP,VP,switch2vdi,back);
+PURI = URI(VS,VP,uriReady);
+
+/////////////////////////////////////
+// My switch mode
+////////////////////////////////////
+
+PPre_duration = Pre_duration(AS,AR,AP,atrFast,atrSlow);
+PDuration = Duration(toDur,VP,VS,switch2vdi,back,atrFast);
+Pcounter = counterModel(atrFast,atrSlow,toDur);
+
+
+////////////////////////////////////////
+// Systems declarations
+////////////////////////////////////////
+
+///////////////////////////////
+// HW2_1
+//////////////////////////////
+//H3_1
+//system PA_3_1,PV_3_1,Pcond_3_1,PAV_3_1;
+//H3_2
+//system PA_3_2,PV_3_2,Pcond_3_2,PAV_3_2;
+//H3_3
+//system PA_3_3,PV_3_3,Pcond_3_3,PAV_3_3;
+//H3_4
+//system PA_3_4,PV_3_4,Pcond_3_4,PAV_3_4,PPVC_3_4;
+//H3_5
+//system PA_3_5,PV_3_5,Pcond_3_5,PAV_3_5;
+//H1
+//system PA_1,PV_1,Pcond_1;
+
+///////////////////////////////
+// HW2_3
+///////////////////////////////
+// Level 0
+// H_0
+//system PA_0,PV_0,PAS,PVS,PLRL,PURL,PPersist,PVRP,PPVARP,PAVI,PLRI,PURI,PPre_duration,PDuration,Pcounter;
+
+// Level 1
+// H_1
+//system PA_1,PV_1,Pcond_1,PAS,PVS,PLRL,PURL,PPersist,PVRP,PPVARP,PAVI,PLRI,PURI;
+
+// Level 2
+// H2_1
+//system PA_2_1,PV_2_1,Pcond_2_1,PAS,PVS,PLRL,PURL,PPersist,PVRP,PPVARP,PAVI,PLRI,PURI;
+
+// H2_2
+//system PA_2_2,PV_2_2,Pcond_2_2,PAS,PVS,PLRL,PURL,PPersist,PVRP,PPVARP,PAVI,PLRI,PURI;
+
+// H2_3
+//system PA_2_3,PV_2_3,Pcond_2_3,PAS,PVS,PLRL,PURL,PPersist,PVRP,PPVARP,PAVI,PLRI,PURI;
+
+// H2_4
+//system PA_2_4,PV_2_4,Pcond_2_4,PAS,PVS,PLRL,PURL,PPersist,PVRP,PPVARP,PAVI,PLRI,PURI;
+
+// H2_5
+//system PA_2_5,PV_2_5,Pcond_2_5,PAS,PVS,PLRL,PURL,PPersist,PVRP,PPVARP,PAVI,PLRI,PURI;
+
+// Level 3
+// H3_1
+//system PA_3_1,PV_3_1,Pcond_3_1,PAV_3_1,PAS,PVS,PLRL,PURL,PPersist,PVRP,PPVARP,PAVI,PLRI,PURI;
+//H3_2 -- Model Switch
+system PA_3_2,PV_3_2,Pcond_3_2,PAV_3_2,PAS,PVS,PLRL,PURL,PPersist,PVRP,PPVARP,PAVI,PLRI,PURI,PPre_duration,PDuration,Pcounter;
+
+//H3_3
+//system PA_3_3,PV_3_3,Pcond_3_3,PAV_3_3,PAS,PVS,PLRL,PURL,PPersist,PVRP,PPVARP,PAVI,PLRI,PURI;
+//H3_4 -- ELT Termination
+//system PA_3_4,PV_3_4,Pcond_3_4,PAV_3_4,PPVC_3_4,PAS,PVS,PLRL,PURL,PPersist,PVRP,PPVARP,PAVI,PLRI,PURI;
+//H3_5
+//system PA_3_5,PV_3_5,Pcond_3_5,PAV_3_5,PAS,PVS,PLRL,PURL,PPersist,PVRP,PPVARP,PAVI,PLRI,PURI;
+</system></nta>
